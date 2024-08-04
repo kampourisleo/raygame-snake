@@ -34,7 +34,9 @@ int main()
     int upper_x = 19; 
     int upper_y = 19; 
     int circleExists = 0; 
-    int snakeSize = 0;
+    int snakeSize = 0; //MAX VALUE == 60???? 
+    float passed_x[60] = {-1}; 
+    float passed_y[60] = {-1};
 //-----------------------------
     InitWindow(screenWidth, screenHeight, "raygame");
 //-----------------------------
@@ -55,6 +57,8 @@ int main()
         for (int i=1; i <= (screenWidth/tileWidth - 1); i++){ 
             DrawLine(i*tileWidth, 0, i*tileWidth, screenHeight, WHITE);
         }
+        //--------------------------------- 
+        DrawFPS(0.85*screenWidth, 0.01*screenHeight); 
         //---------------------------------
         //GENERATING RANDOM CIRCLES PART: 
         //TILE SIZE: RECTANGLE HEIGHT X RECTANGLE WIDTH. ==> 
@@ -76,8 +80,12 @@ int main()
         //----------------------------------------------
         //"Use 'WASD' to move player" 
         //DRAW SNAKE HEAD, MOVEMENT INCREMENTS AND BORDER CHECK PART:  
-        DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, SKYBLUE); //DRAWING STARTS FROM UPPER LEFT CORNER.
+        DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER. 
+        //MOVEMENT: 
         if ((IsKeyPressed(KEY_W) || IsKeyPressedRepeat(KEY_W)) && (y1 - (RectangleHeight / 2) >= 0)){ 
+            //previous: 
+
+            //movement:
             y1 = y1 - (RectangleHeight); 
             x1 = x1; 
         } else  if ((IsKeyPressed(KEY_S) || IsKeyPressedRepeat(KEY_S)) && (y1 + RectangleHeight < screenHeight)){ 
@@ -93,9 +101,16 @@ int main()
         //---------------------------------- 
         //EATING CIRCLE (FRUIT) PART:
         if((x1 == (rand_x - tileWidth/2)) && (y1 == (rand_y - tileHeight/2))){ 
-        circleExists=0;
-
+        circleExists=0; 
+        scoreCounter++;
+        snakeSize++;
         }
+        //DRAWING SCORE: 
+        DrawText(TextFormat("SCORE: %02i", scoreCounter), 0.02*screenWidth, 0.01*screenHeight, 20, SKYBLUE);
+        //---------------------------------
+
+        //DRAWING BODY OF SNAKE: 
+
 
         //--------------------------
         EndDrawing();
