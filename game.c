@@ -81,11 +81,18 @@ int main()
         //"Use 'WASD' to move player" 
         //DRAW SNAKE HEAD, MOVEMENT INCREMENTS AND BORDER CHECK PART:  
         DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER. 
+        //DRAWING BODY OF SNAKE: NEEDS FIXING!!!!!!!!!!!!!!!!!!!
+        passed_x[0] = x1; 
+        passed_y[0] = y1;
+        for (int i=1; i <= snakeSize; i++){ 
+            DrawRectangle(passed_x[i-1], passed_y[i-1], RectangleWidth, RectangleHeight, SKYBLUE);
+            passed_x[i] = passed_x[i-1]; 
+            passed_y[i] = passed_y[i-1]; 
+            
+        } 
+        //------------------------------------
         //MOVEMENT: 
         if ((IsKeyPressed(KEY_W) || IsKeyPressedRepeat(KEY_W)) && (y1 - (RectangleHeight / 2) >= 0)){ 
-            //previous: 
-
-            //movement:
             y1 = y1 - (RectangleHeight); 
             x1 = x1; 
         } else  if ((IsKeyPressed(KEY_S) || IsKeyPressedRepeat(KEY_S)) && (y1 + RectangleHeight < screenHeight)){ 
@@ -109,8 +116,7 @@ int main()
         DrawText(TextFormat("SCORE: %02i", scoreCounter), 0.02*screenWidth, 0.01*screenHeight, 20, SKYBLUE);
         //---------------------------------
 
-        //DRAWING BODY OF SNAKE: 
-
+        
 
         //--------------------------
         EndDrawing();
