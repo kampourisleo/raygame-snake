@@ -2,7 +2,6 @@
 #include "raylib.h" 
 #include <time.h>
 #include <stdlib.h>
-
 #define PHYSAC_IMPLEMENTATION
 #include "physac.h"
 
@@ -18,12 +17,10 @@ int main()
     float tileWidth = RectangleWidth; 
     //pixels 
     //INITIAL POSITIONS IN WINDOW: 
-    //STARTING TILE: UP AND LEFT TILE FROM MIDDLE OF GRID
-    float x0 = screenWidth / 2 - (RectangleWidth); 
-    float y0 = screenHeight / 2 - (RectangleHeight); 
+    //STARTING TILE: UP AND LEFT TILE FROM MIDDLE OF GRID 
     //COORDINATES REFER TO LOCATION OF UPPER LEFT CORNER OF SQUARE (HEAD).
-    float x1 = x0; 
-    float y1 = y0; 
+    float x1 = screenWidth / 2 - (RectangleWidth); 
+    float y1 = screenHeight / 2 - (RectangleHeight); 
     float radius;
     int scoreCounter = 0; 
     //For circle: 
@@ -34,11 +31,12 @@ int main()
     int upper_x = 19; 
     int upper_y = 19; 
     int circleExists = 0; 
-    int snakeSize = 0; //MAX VALUE == 60???? 
-    float passed_x[60] = {-1}; 
-    float passed_y[60] = {-1};
+    int snakeSize = 0; //MAX VALUE = length == 60.
+    float passed_x[60] = {0}; 
+    float passed_y[60] = {0};
+    int length = sizeof(passed_x) / sizeof(passed_x[0]);
 //-----------------------------
-    InitWindow(screenWidth, screenHeight, "raygame");
+    InitWindow(screenWidth, screenHeight, "Snake-game");
 //-----------------------------
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -59,7 +57,7 @@ int main()
         }
         //--------------------------------- 
         DrawFPS(0.85*screenWidth, 0.01*screenHeight); 
-        //---------------------------------
+        //-----------------------------------
         //GENERATING RANDOM CIRCLES PART: 
         //TILE SIZE: RECTANGLE HEIGHT X RECTANGLE WIDTH. ==> 
         //CENTER: y2 = y + tileHeight/2, x2 = x + tileWidth/2. 
@@ -81,15 +79,8 @@ int main()
         //"Use 'WASD' to move player" 
         //DRAW SNAKE HEAD, MOVEMENT INCREMENTS AND BORDER CHECK PART:  
         DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER. 
-        //DRAWING BODY OF SNAKE: NEEDS FIXING!!!!!!!!!!!!!!!!!!!
-        passed_x[0] = x1; 
-        passed_y[0] = y1;
-        for (int i=1; i <= snakeSize; i++){ 
-            DrawRectangle(passed_x[i-1], passed_y[i-1], RectangleWidth, RectangleHeight, SKYBLUE);
-            passed_x[i] = passed_x[i-1]; 
-            passed_y[i] = passed_y[i-1]; 
-            
-        } 
+        //DRAWING BODY OF SNAKE:
+        
         //------------------------------------
         //MOVEMENT: 
         if ((IsKeyPressed(KEY_W) || IsKeyPressedRepeat(KEY_W)) && (y1 - (RectangleHeight / 2) >= 0)){ 
@@ -115,8 +106,6 @@ int main()
         //DRAWING SCORE: 
         DrawText(TextFormat("SCORE: %02i", scoreCounter), 0.02*screenWidth, 0.01*screenHeight, 20, SKYBLUE);
         //---------------------------------
-
-        
 
         //--------------------------
         EndDrawing();
