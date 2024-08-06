@@ -6,15 +6,17 @@
 #include "physac.h"
 
 int main()
-{   //RESOLUTION: 
-    float screenWidth = 500.0;
-    float screenHeight = 500.0; 
+{   
+    //RESOLUTION: 
+    const float screenWidth = 500.0;
+    const float screenHeight = 500.0; 
     //SQUARE SIZE: 
-    float RectangleWidth = screenWidth / 20.0; 
-    float RectangleHeight = screenHeight / 20.0; 
+    const float RectangleWidth = screenWidth / 20.0; 
+    const float RectangleHeight = screenHeight / 20.0; 
     //TILE SIZE: 
-    float tileHeight = RectangleHeight; 
-    float tileWidth = RectangleWidth; 
+    const float tileHeight = RectangleHeight; 
+    const float tileWidth = RectangleWidth; 
+    
     //pixels 
     //INITIAL POSITIONS IN WINDOW: 
     //STARTING TILE: UP AND LEFT TILE FROM MIDDLE OF GRID 
@@ -30,11 +32,12 @@ int main()
     int lower_y = 1; 
     int upper_x = 19; 
     int upper_y = 19; 
-    int circleExists = 0; 
-    int snakeSize = 0; //MAX VALUE = length == 60.
-    float passed_x[60] = {0}; 
-    float passed_y[60] = {0};
-    int length = sizeof(passed_x) / sizeof(passed_x[0]);
+    int circleExists = 0;
+    const int arraySize = (int)(screenHeight/tileHeight*screenWidth/tileWidth); 
+    int snakeSize = 1; //MAX VALUE = length == 60.
+    float passed_x[arraySize]; 
+    float passed_y[arraySize];
+    int length = sizeof(passed_x) / sizeof(passed_x[0]); 
 //-----------------------------
     InitWindow(screenWidth, screenHeight, "Snake-game");
 //-----------------------------
@@ -77,23 +80,27 @@ int main()
         DrawCircle(rand_x, rand_y, (radius), RED); 
         //----------------------------------------------
         //"Use 'WASD' to move player" 
-        //DRAW SNAKE HEAD, MOVEMENT INCREMENTS AND BORDER CHECK PART:  
-        DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER. 
-        //DRAWING BODY OF SNAKE:
+        //LOGGING PREVIOUS POSITIONS: 
         
+        //-----------------------------------------------. 
+        //DRAWING BODY OF SNAKE:
+        //---------------------------------
+        for(int i=snakeSize; i > 0; i--){ 
+            if((passed_x[i] != 2*screenHeight) && (passed_y[i] != 2*screenHeight) && (snakeSize != 0)){ 
+                DrawRectangle(passed_x[i], passed_y[i], RectangleWidth, RectangleHeight, SKYBLUE);
+            }
+        } 
+         //DRAW SNAKE HEAD, MOVEMENT INCREMENTS AND BORDER CHECK PART:  
+        DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER.
         //------------------------------------
         //MOVEMENT: 
         if ((IsKeyPressed(KEY_W) || IsKeyPressedRepeat(KEY_W)) && (y1 - (RectangleHeight / 2) >= 0)){ 
             y1 = y1 - (RectangleHeight); 
-            x1 = x1; 
         } else  if ((IsKeyPressed(KEY_S) || IsKeyPressedRepeat(KEY_S)) && (y1 + RectangleHeight < screenHeight)){ 
             y1 = y1 + (RectangleHeight); 
-            x1 = x1;
         } else if ((IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_A)) && (x1 - (RectangleWidth / 2) >= 0)){ 
-            y1 = y1; 
             x1 = x1 - (RectangleWidth);
         } else if ((IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_D)) && (x1 + RectangleWidth < screenWidth)){ 
-            y1 = y1; 
             x1 = x1 + (RectangleWidth);
         }
         //---------------------------------- 
@@ -105,8 +112,22 @@ int main()
         }
         //DRAWING SCORE: 
         DrawText(TextFormat("SCORE: %02i", scoreCounter), 0.02*screenWidth, 0.01*screenHeight, 20, SKYBLUE);
-        //---------------------------------
-
+        // 
+        if(x1 != passed_x[0] || y1 != passed_y[0]){ 
+            passed_x[0]=x1; 
+            passed_y[0]=y1;
+            for(int i=length-1; i > 0; i--){ 
+                passed_x[i] = passed_x[i-1]; 
+                passed_y[i] = passed_y[i-1];
+            } 
+        }
+        
+        //COLLISION CHECKS:
+        for(int i=1; i <= snakeSize; i++){ 
+           if((passed_x[i+1] == x1) && (passed_y[i+1] == y1)){ 
+                exit(1);
+            }
+        } 
         //--------------------------
         EndDrawing();
     }
