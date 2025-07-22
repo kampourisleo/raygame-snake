@@ -10,6 +10,7 @@ int main()
     //RESOLUTION: 
     const float screenWidth = 500.0;
     const float screenHeight = 500.0; 
+    const int FPS_LIMIT = 60;
     //SQUARE SIZE: 
     const float RectangleWidth = screenWidth / 20.0; 
     const float RectangleHeight = screenHeight / 20.0; 
@@ -25,6 +26,8 @@ int main()
     float y1 = screenHeight / 2 - (RectangleHeight); 
     float radius;
     int scoreCounter = 0; 
+    float velocity_x = 0.06; 
+    float velocity_y = 0; 
     //For circle: 
     float rand_x; 
     float rand_y;
@@ -41,7 +44,7 @@ int main()
 //-----------------------------
     InitWindow(screenWidth, screenHeight, "Snake-game");
 //-----------------------------
-    SetTargetFPS(60);
+    SetTargetFPS(FPS_LIMIT);
     while (!WindowShouldClose())
     {
         BeginDrawing(); 
@@ -78,10 +81,6 @@ int main()
         } 
         //Drawing circle: 
         DrawCircle(rand_x, rand_y, (radius), RED); 
-        //----------------------------------------------
-        //"Use 'WASD' to move player" 
-        //LOGGING PREVIOUS POSITIONS: 
-        
         //-----------------------------------------------. 
         //DRAWING BODY OF SNAKE:
         //---------------------------------
@@ -94,18 +93,29 @@ int main()
         DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER.
         //------------------------------------
         //MOVEMENT: 
-        if ((IsKeyPressed(KEY_W) || IsKeyPressedRepeat(KEY_W)) && (y1 - (RectangleHeight / 2) >= 0)){ 
-            y1 = y1 - (RectangleHeight); 
-        } else  if ((IsKeyPressed(KEY_S) || IsKeyPressedRepeat(KEY_S)) && (y1 + RectangleHeight < screenHeight)){ 
-            y1 = y1 + (RectangleHeight); 
-        } else if ((IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_A)) && (x1 - (RectangleWidth / 2) >= 0)){ 
-            x1 = x1 - (RectangleWidth);
-        } else if ((IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_D)) && (x1 + RectangleWidth < screenWidth)){ 
-            x1 = x1 + (RectangleWidth);
+        if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) && (y1  >= RectangleHeight/2)){ 
+            velocity_y = -0.06;
+            velocity_x = 0;
+            //y1 = y1 - (RectangleHeight); 
+        } else  if ((IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) && (y1 + RectangleHeight < screenHeight)){ 
+            velocity_y = 0.06; 
+            velocity_x = 0;
+            //y1 = y1 + (RectangleHeight); 
+        } else if ((IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) && (x1 - (RectangleWidth / 2) >= 0)){ 
+            velocity_x = -0.06; 
+            velocity_y = 0;
+            //x1 = x1 - (RectangleWidth);
+        } else if ((IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) && (x1 + RectangleWidth < screenWidth)){ 
+            velocity_x = 0.06; 
+            velocity_y = 0;
+            //x1 = x1 + (RectangleWidth);
         }
         //---------------------------------- 
+        y1 = y1 + velocity_y * RectangleHeight; //* RectangleHeight; 
+        x1 = x1 + velocity_x * RectangleWidth; //* RectangleWidth;
+        //----------------------------------
         //EATING CIRCLE (FRUIT) PART:
-        if((x1 == (rand_x - tileWidth/2)) && (y1 == (rand_y - tileHeight/2))){ 
+        if((x1 <= (rand_x - tileWidth/2 + radius)) && (x1 > rand_x - tileWidth/2 - radius) && (y1 <= (rand_y - tileHeight/2 + radius)) && (y1 > (rand_y - tileHeight/2 - radius))){ 
         circleExists=0; 
         scoreCounter++;
         snakeSize++;
