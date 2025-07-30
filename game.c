@@ -2,8 +2,6 @@
 #include "raylib.h" 
 #include <time.h>
 #include <stdlib.h>
-#define PHYSAC_IMPLEMENTATION
-#include "physac.h"
 
 int main()
 {   
@@ -26,8 +24,6 @@ int main()
     float y1 = screenHeight / 2 - (RectangleHeight); 
     float radius;
     int scoreCounter = 0; 
-    float velocity_x = 0.06; 
-    float velocity_y = 0; 
     //For circle: 
     float rand_x; 
     float rand_y;
@@ -94,28 +90,20 @@ int main()
         //------------------------------------
         //MOVEMENT: 
         if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) && (y1  >= RectangleHeight/2)){ 
-            velocity_y = -0.06;
-            velocity_x = 0;
-            //y1 = y1 - (RectangleHeight); 
+            y1 = y1 - RectangleHeight; 
         } else  if ((IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) && (y1 + RectangleHeight < screenHeight)){ 
-            velocity_y = 0.06; 
-            velocity_x = 0;
-            //y1 = y1 + (RectangleHeight); 
+            y1 = y1 + RectangleHeight; 
         } else if ((IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) && (x1 - (RectangleWidth / 2) >= 0)){ 
-            velocity_x = -0.06; 
-            velocity_y = 0;
-            //x1 = x1 - (RectangleWidth);
+            x1 = x1 - RectangleWidth;
         } else if ((IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) && (x1 + RectangleWidth < screenWidth)){ 
-            velocity_x = 0.06; 
-            velocity_y = 0;
-            //x1 = x1 + (RectangleWidth);
+            x1 = x1 + RectangleWidth;
         }
         //---------------------------------- 
-        y1 = y1 + velocity_y * RectangleHeight; //* RectangleHeight; 
-        x1 = x1 + velocity_x * RectangleWidth; //* RectangleWidth;
+       // y1 = y1 + RectangleHeight; //* RectangleHeight; 
+        //x1 = x1 + RectangleWidth; //* RectangleWidth;
         //----------------------------------
         //EATING CIRCLE (FRUIT) PART:
-        if((x1 <= (rand_x - tileWidth/2 + radius)) && (x1 > rand_x - tileWidth/2 - radius) && (y1 <= (rand_y - tileHeight/2 + radius)) && (y1 > (rand_y - tileHeight/2 - radius))){ 
+        if(x1 == (rand_x - tileWidth/2) && (y1 == (rand_y - tileHeight/2))){ 
         circleExists=0; 
         scoreCounter++;
         snakeSize++;
