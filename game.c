@@ -15,7 +15,6 @@ int main()
     //TILE SIZE: 
     const float tileHeight = RectangleHeight; 
     const float tileWidth = RectangleWidth; 
-    
     //pixels 
     //INITIAL POSITIONS IN WINDOW: 
     //STARTING TILE: UP AND LEFT TILE FROM MIDDLE OF GRID 
@@ -46,9 +45,6 @@ int main()
         BeginDrawing(); 
         //WINDOW AND COLOR CHANGE
         Color clearColor = BLACK;
-        if (IsKeyDown(KEY_SPACE)){ 
-            clearColor = PINK;
-        } 
         ClearBackground(clearColor);
         //Drawing lines to form tile grid on screen-space.
         for (int i=1; i <= (screenHeight/tileHeight - 1); i++){ 
@@ -98,10 +94,6 @@ int main()
         } else if ((IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) && (x1 + RectangleWidth < screenWidth)){ 
             x1 = x1 + RectangleWidth;
         }
-        //---------------------------------- 
-       // y1 = y1 + RectangleHeight; //* RectangleHeight; 
-        //x1 = x1 + RectangleWidth; //* RectangleWidth;
-        //----------------------------------
         //EATING CIRCLE (FRUIT) PART:
         if(x1 == (rand_x - tileWidth/2) && (y1 == (rand_y - tileHeight/2))){ 
         circleExists=0; 
@@ -119,7 +111,6 @@ int main()
                 passed_y[i] = passed_y[i-1];
             } 
         }
-        
         //COLLISION CHECKS:
         for(int i=1; i <= snakeSize; i++){ 
            if((passed_x[i+1] == x1) && (passed_y[i+1] == y1)){ 
