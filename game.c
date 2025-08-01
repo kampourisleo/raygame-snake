@@ -128,12 +128,12 @@ int main()
                 passed_y[i] = passed_y[i-1];
             } 
         }
-        //COLLISION CHECKS: NEEDS FIX
-        /*for(int i=1; i <= snakeSize; i++){ 
+        //COLLISION CHECKS:
+        for(int i=1; i <= snakeSize; i++){ 
            if((passed_x[i+1] == x1) && (passed_y[i+1] == y1)){ 
                 exit(1);
             }
-        } */
+        }
         count_fps++; //used for incremental movement
         EndDrawing();
     }
