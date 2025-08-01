@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "raylib.h" 
 #include <time.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 
 int main()
 {   
@@ -26,16 +26,18 @@ int main()
     //For circle: 
     float rand_x; 
     float rand_y;
-    int lower_x = 1; 
-    int lower_y = 1; 
-    int upper_x = 19; 
-    int upper_y = 19; 
+    int lower_x = 1, lower_y = 1; 
+    int upper_x = 19, upper_y = 19; 
     int circleExists = 0;
     const int arraySize = (int)(screenHeight/tileHeight*screenWidth/tileWidth); 
     int snakeSize = 1; //MAX VALUE = length == 60.
     float passed_x[arraySize]; 
     float passed_y[arraySize];
     int length = sizeof(passed_x) / sizeof(passed_x[0]); 
+    //for time: 
+    int count_fps;
+    //velocities: 
+    int velocity_x = 0, velocity_y = 0; 
 //-----------------------------
     InitWindow(screenWidth, screenHeight, "Snake-game");
 //-----------------------------
@@ -46,13 +48,14 @@ int main()
         //WINDOW AND COLOR CHANGE
         Color clearColor = BLACK;
         ClearBackground(clearColor);
+        //GRID: used for debugging.
         //Drawing lines to form tile grid on screen-space.
-        for (int i=1; i <= (screenHeight/tileHeight - 1); i++){ 
+        /*for (int i=1; i <= (screenHeight/tileHeight - 1); i++){ 
             DrawLine(0, i*tileHeight, screenWidth, i*tileHeight, WHITE);
         }
         for (int i=1; i <= (screenWidth/tileWidth - 1); i++){ 
             DrawLine(i*tileWidth, 0, i*tileWidth, screenHeight, WHITE);
-        }
+        }*/
         //--------------------------------- 
         DrawFPS(0.85*screenWidth, 0.01*screenHeight); 
         //-----------------------------------
@@ -85,15 +88,29 @@ int main()
         DrawRectangle(x1, y1, RectangleWidth, RectangleHeight, BLUE); //DRAWING STARTS FROM UPPER LEFT CORNER.
         //------------------------------------
         //MOVEMENT: 
-        if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) && (y1  >= RectangleHeight/2)){ 
-            y1 = y1 - RectangleHeight; 
-        } else  if ((IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) && (y1 + RectangleHeight < screenHeight)){ 
-            y1 = y1 + RectangleHeight; 
-        } else if ((IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) && (x1 - (RectangleWidth / 2) >= 0)){ 
-            x1 = x1 - RectangleWidth;
-        } else if ((IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) && (x1 + RectangleWidth < screenWidth)){ 
-            x1 = x1 + RectangleWidth;
+        if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)){ 
+            //y1 = y1 - RectangleHeight; 
+            velocity_y = -1; 
+            velocity_x = 0;
+        } else  if (IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)){ 
+            //y1 = y1 + RectangleHeight; 
+            velocity_y = 1; 
+            velocity_x = 0;
+        } else if (IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)){ 
+            //x1 = x1 - RectangleWidth; 
+            velocity_y = 0; 
+            velocity_x = -1;
+        } else if (IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)){ 
+            //x1 = x1 + RectangleWidth; 
+            velocity_y = 0; 
+            velocity_x = 1;
         }
+            //CALCULATING NEW POSITIONS: 
+            if(count_fps >= GetFPS()/5){
+                x1 = x1 + velocity_x*RectangleWidth; 
+                y1 = y1 + velocity_y*RectangleHeight;
+                count_fps =0;
+            }
         //EATING CIRCLE (FRUIT) PART:
         if(x1 == (rand_x - tileWidth/2) && (y1 == (rand_y - tileHeight/2))){ 
         circleExists=0; 
@@ -111,17 +128,15 @@ int main()
                 passed_y[i] = passed_y[i-1];
             } 
         }
-        //COLLISION CHECKS:
-        for(int i=1; i <= snakeSize; i++){ 
+        //COLLISION CHECKS: NEEDS FIX
+        /*for(int i=1; i <= snakeSize; i++){ 
            if((passed_x[i+1] == x1) && (passed_y[i+1] == y1)){ 
                 exit(1);
             }
-        } 
-        //--------------------------
+        } */
+        count_fps++; //used for incremental movement
         EndDrawing();
     }
-
     CloseWindow(); 
-
     return 0;
 } 
